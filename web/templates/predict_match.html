@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Match Prediction - IPL Prediction System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mb-5">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-shield-alt"></i> Match Winner Prediction</h2>
+            </div>
+            <div class="card-body p-5">
+                <form method="POST" id="predictionForm">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Team 1</label>
+                            <select name="team1" class="form-select form-select-lg" required>
+                                <option value="">-- Select Team --</option>
+                                {% for team in teams %}
+                                <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Team 2</label>
+                            <select name="team2" class="form-select form-select-lg" required>
+                                <option value="">-- Select Team --</option>
+                                {% for team in teams %}
+                                <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Venue</label>
+                            <select name="venue" class="form-select form-select-lg" required>
+                                <option value="">-- Select Venue --</option>
+                                {% for venue in venues %}
+                                <option value="{{ venue }}">{{ venue }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Match Date</label>
+                            <input type="date" name="match_date" class="form-control form-control-lg">
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Toss Winner</label>
+                            <select name="toss_winner" class="form-select form-select-lg" required>
+                                <option value="">-- Select Toss Winner --</option>
+                                {% for team in teams %}
+                                <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Toss Decision</label>
+                            <select name="toss_decision" class="form-select form-select-lg" required>
+                                <option value="bat">Bat</option>
+                                <option value="field">Field</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-magic"></i> Get Prediction
+                        </button>
+                    </div>
+                </form>
+
+                {% if prediction %}
+                <div class="mt-5">
+                    <div class="prediction-result">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h3 class="mb-3">Prediction Result</h3>
+                                <div class="mb-3">
+                                    <strong class="d-block mb-2">Predicted Winner:</strong>
+                                    <span class="display-5" style="color: #ffc107;">{{ prediction.predicted_winner }}</span>
+                                </div>
+                                <div>
+                                    <strong class="d-block mb-2">Win Probability:</strong>
+                                    <div class="progress" style="height: 30px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ prediction.probability }}%;">
+                                            {{ prediction.probability }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="predictionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ prediction.team1 }}</h5>
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ prediction.team1_prob }}%;">
+                                            {{ prediction.team1_prob }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ prediction.team2 }}</h5>
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ prediction.team2_prob }}%;">
+                                            {{ prediction.team2_prob }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    const ctx = document.getElementById('predictionChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['{{ prediction.team1 }}', '{{ prediction.team2 }}'],
+                            datasets: [{
+                                data: [{{ prediction.team1_prob }}, {{ prediction.team2_prob }}],
+                                backgroundColor: ['#1f77d2', '#2ca02c'],
+                                borderColor: ['#fff', '#fff'],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Information Section -->
+<div class="row mt-5">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-info-circle text-primary"></i> How It Works</h5>
+                <p class="card-text small">Our AI model analyzes historical IPL data, team performance, venue statistics, and toss impact to predict match outcomes with high accuracy.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-brain text-success"></i> ML Models</h5>
+                <p class="card-text small">We use ensemble methods combining Random Forest, XGBoost, and Gradient Boosting for optimal predictions with 90%+ accuracy.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-database text-warning"></i> Data-Driven</h5>
+                <p class="card-text small">Trained on complete IPL historical data including matches, player performance, and venue-specific statistics.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

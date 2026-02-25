@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Home - IPL Prediction System{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <!-- Hero Section -->
+    <div class="col-12">
+        <div style="background: linear-gradient(135deg, #1f77d2 0%, #1555a3 100%); color: white; padding: 60px; border-radius: 10px; text-align: center;">
+            <h1 class="display-4 mb-3"><i class="fas fa-cricket"></i> IPL Match & Player Prediction</h1>
+            <p class="lead mb-4">Advanced AI-powered predictions for IPL matches and player performances</p>
+            <div>
+                <a href="/match" class="btn btn-warning btn-lg me-2">
+                    <i class="fas fa-shield-alt"></i> Predict Match
+                </a>
+                <a href="/player" class="btn btn-info btn-lg">
+                    <i class="fas fa-user"></i> Predict Player
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+{% if stats %}
+<div class="row mb-5">
+    <div class="col-md-3">
+        <div class="stat-card text-center">
+            <div class="mb-3"><i class="fas fa-chart-bar fa-2x"></i></div>
+            <h3>{{ stats.total_predictions }}</h3>
+            <p>Total Predictions</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #2ca02c 0%, #1e7e0e 100%);">
+            <div class="mb-3"><i class="fas fa-bullseye fa-2x"></i></div>
+            <h3>{{ stats.accuracy }}%</h3>
+            <p>Accuracy Rate</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #ff7f0e 0%, #e67e22 100%);">
+            <div class="mb-3"><i class="fas fa-trophy fa-2x"></i></div>
+            <h3>{{ stats.total_teams }}</h3>
+            <p>IPL Teams</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #d62728 0%, #c0392b 100%);">
+            <div class="mb-3"><i class="fas fa-fire fa-2x"></i></div>
+            <h3>24/7</h3>
+            <p>Available</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Predictions Section -->
+{% if recent_predictions %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Recent Predictions</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Team 1</th>
+                                <th>Team 2</th>
+                                <th>Predicted Winner</th>
+                                <th>Win Probability</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in recent_predictions %}
+                            <tr>
+                                <td><strong>{{ pred.team1 }}</strong></td>
+                                <td><strong>{{ pred.team2 }}</strong></td>
+                                <td>
+                                    <span class="badge bg-success">{{ pred.predicted_winner }}</span>
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ pred.win_probability }}%;">
+                                            {{ pred.win_probability }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ pred.prediction_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <a href="/history" class="btn btn-outline-primary">View All Predictions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Advanced ML Models</h5>
+                <p class="card-text">Trained with Random Forest, XGBoost, and Gradient Boosting algorithms for optimal predictions.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Real-time Analytics</h5>
+                <p class="card-text">Get instant insights with comprehensive dashboards and team performance metrics.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Player Insights</h5>
+                <p class="card-text">Predict individual player performance categories: High, Medium, or Low impact.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="row">
+    <div class="col-12">
+        <div style="background: linear-gradient(135deg, #1f77d2 0%, #1555a3 100%); color: white; padding: 40px; border-radius: 10px; text-align: center;">
+            <h2 class="mb-3">Ready to Get Predictions?</h2>
+            <p class="mb-4">Start making data-driven predictions for your favorite IPL matches today!</p>
+            <a href="/dashboard" class="btn btn-light btn-lg">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

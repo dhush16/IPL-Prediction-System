@@ -1,0 +1,472 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-arrows-alt-h"></i> Team Comparison Tool
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Form -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-sliders-h"></i> Select Teams to Compare
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="comparisonForm" class="row g-3">
+                        <div class="col-md-5">
+                            <label for="team1" class="form-label fw-bold">
+                                <i class="fas fa-shield-alt"></i> Team 1
+                            </label>
+                            <select class="form-select form-select-lg" id="team1" name="team1" required>
+                                <option value="">-- Select Team 1 --</option>
+                                {% set teams = [
+                                    'Mumbai Indians',
+                                    'Chennai Super Kings',
+                                    'Royal Challengers Bangalore',
+                                    'Sunrisers Hyderabad',
+                                    'Kolkata Knight Riders',
+                                    'Delhi Capitals',
+                                    'Rajasthan Royals',
+                                    'Punjab Kings'
+                                ] %}
+                                {% for team in teams %}
+                                    <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-sync"></i> Compare
+                            </button>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label for="team2" class="form-label fw-bold">
+                                <i class="fas fa-shield-alt"></i> Team 2
+                            </label>
+                            <select class="form-select form-select-lg" id="team2" name="team2" required>
+                                <option value="">-- Select Team 2 --</option>
+                                {% for team in teams %}
+                                    <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison is made, show results -->
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <!-- Team Comparison Stats -->
+    <div class="row mb-4">
+        <!-- Team 1 Stats -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt"></i> Mumbai Indians</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h6 class="text-muted mb-1">Total Matches</h6>
+                            <h3 class="mb-0">412</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted mb-1">Win Rate</h6>
+                            <h3 class="mb-0 text-success">57.0%</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h6 class="mb-2">Wins vs Losses</h6>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 57%;">
+                                <small>235 Wins</small>
+                            </div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 43%;">
+                                <small>177 Losses</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Avg Runs</small>
+                            <strong class="fs-5">162.5</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Avg Against</small>
+                            <strong class="fs-5">151.8</strong>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Home Wins</small>
+                            <strong>130</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Away Wins</small>
+                            <strong>105</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team 2 Stats -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt"></i> Chennai Super Kings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h6 class="text-muted mb-1">Total Matches</h6>
+                            <h3 class="mb-0">383</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted mb-1">Win Rate</h6>
+                            <h3 class="mb-0 text-success">55.1%</h3>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h6 class="mb-2">Wins vs Losses</h6>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 55%;">
+                                <small>211 Wins</small>
+                            </div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 45%;">
+                                <small>172 Losses</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Avg Runs</small>
+                            <strong class="fs-5">160.2</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Avg Against</small>
+                            <strong class="fs-5">150.1</strong>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Home Wins</small>
+                            <strong>123</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Away Wins</small>
+                            <strong>88</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Direct Comparison Table -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Head-to-Head Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Metric</th>
+                                    <th class="text-center">Mumbai Indians</th>
+                                    <th class="text-center">Difference</th>
+                                    <th class="text-center">Chennai Super Kings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Total Matches</strong></td>
+                                    <td class="text-center">412</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">+29</span>
+                                    </td>
+                                    <td class="text-center">383</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Wins</strong></td>
+                                    <td class="text-center"><span class="badge bg-success">235</span></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">+24</span>
+                                    </td>
+                                    <td class="text-center"><span class="badge bg-success">211</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Losses</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">177</span></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-danger">+5</span>
+                                    </td>
+                                    <td class="text-center"><span class="badge bg-danger">172</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Win %</strong></td>
+                                    <td class="text-center"><strong>57.0%</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">+1.9%</span>
+                                    </td>
+                                    <td class="text-center"><strong>55.1%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Avg Runs</strong></td>
+                                    <td class="text-center"><strong>162.5</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning">+2.3</span>
+                                    </td>
+                                    <td class="text-center"><strong>160.2</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Avg Against</strong></td>
+                                    <td class="text-center"><strong>151.8</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">+1.7</span>
+                                    </td>
+                                    <td class="text-center"><strong>150.1</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Home Win Rate</strong></td>
+                                    <td class="text-center"><strong>63.4%</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">+6.1%</span>
+                                    </td>
+                                    <td class="text-center"><strong>57.3%</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Away Win Rate</strong></td>
+                                    <td class="text-center"><strong>51.2%</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">-1.2%</span>
+                                    </td>
+                                    <td class="text-center"><strong>52.4%</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Direct MI vs CSK Record -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-handshake"></i> MI vs CSK Record</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h2 class="mb-3">
+                        <span class="text-primary">18</span> - 
+                        <span class="badge bg-dark">vs</span> - 
+                        <span class="text-success">16</span>
+                    </h2>
+                    <h6 class="text-muted mb-3">Total Matches: 34</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="mb-2">MI Dominance</h6>
+                            <div class="progress mb-2" style="height: 20px;">
+                                <div class="progress-bar bg-primary" style="width: 52.9%;">
+                                    52.9%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="mb-2">CSK Wins</h6>
+                            <div class="progress mb-2" style="height: 20px;">
+                                <div class="progress-bar bg-success" style="width: 47.1%;">
+                                    47.1%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <small class="text-muted">MI leads the head-to-head record</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Key Insights</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="mb-2">
+                            <i class="fas fa-check-circle text-success"></i> Strengths
+                        </h6>
+                        <ul class="mb-0 ms-3">
+                            <li><strong>MI:</strong> Consistent performers, Home advantage dominance</li>
+                            <li><strong>CSK:</strong> Experience, better away record</li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h6 class="mb-2">
+                            <i class="fas fa-chart-line text-primary"></i> Trends
+                        </h6>
+                        <ul class="mb-0 ms-3">
+                            <li>MI improving in away matches (51.2%)</li>
+                            <li>CSK stronger away from home (52.4%)</li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <div>
+                        <h6 class="mb-2">
+                            <i class="fas fa-lightbulb text-warning"></i> Prediction Edge
+                        </h6>
+                        <ul class="mb-0 ms-3">
+                            <li>MI preferred for home matches</li>
+                            <li>Toss advantage slightly favors MI</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Charts -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-radar"></i> Performance Radar</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="radarChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Win Comparison</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="winComparisonChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <a href="{{ url_for('home.dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-chart-bar"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('prediction.match_prediction') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-magic"></i> Make a Prediction
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Radar Chart
+    const radarCtx = document.getElementById('radarChart').getContext('2d');
+    new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Consistency', 'Batting', 'Bowling', 'Home', 'Away', 'Recent Form'],
+            datasets: [
+                {
+                    label: 'MI',
+                    data: [85, 80, 75, 90, 70, 85],
+                    borderColor: 'rgb(31, 119, 210)',
+                    backgroundColor: 'rgba(31, 119, 210, 0.2)',
+                    tension: 0.3
+                },
+                {
+                    label: 'CSK',
+                    data: [82, 78, 78, 82, 75, 80],
+                    borderColor: 'rgb(255, 165, 0)',
+                    backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Win Comparison Chart
+    const winCtx = document.getElementById('winComparisonChart').getContext('2d');
+    new Chart(winCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Wins', 'Home Wins', 'Away Wins', 'Recent (Last 5)'],
+            datasets: [
+                {
+                    label: 'MI',
+                    data: [235, 130, 105, 4],
+                    backgroundColor: 'rgba(31, 119, 210, 0.7)',
+                    borderColor: 'rgb(31, 119, 210)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'CSK',
+                    data: [211, 123, 88, 3],
+                    backgroundColor: 'rgba(255, 165, 0, 0.7)',
+                    borderColor: 'rgb(255, 165, 0)',
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Form Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-gradient text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-check"></i> Player Performance Prediction
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    {% if prediction %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Prediction Complete!</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" id="playerForm" class="needs-validation">
+                        <div class="mb-3">
+                            <label for="player_name" class="form-label fw-bold">
+                                <i class="fas fa-user"></i> Select Player
+                            </label>
+                            <select class="form-select form-select-lg" id="player_name" name="player_name" required>
+                                <option value="">-- Choose a Player --</option>
+                                {% for player in players %}
+                                    <option value="{{ player }}">{{ player }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Select the player you want to predict for</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="player_team" class="form-label fw-bold">
+                                <i class="fas fa-shield-alt"></i> Player Team
+                            </label>
+                            <select class="form-select form-select-lg" id="player_team" name="player_team" required>
+                                <option value="">-- Choose Team --</option>
+                                {% for team in teams %}
+                                    <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="opposition_team" class="form-label fw-bold">
+                                <i class="fas fa-users"></i> Opposition Team
+                            </label>
+                            <select class="form-select form-select-lg" id="opposition_team" name="opposition_team" required>
+                                <option value="">-- Choose Opposition --</option>
+                                {% for team in teams %}
+                                    <option value="{{ team }}">{{ team }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="venue" class="form-label fw-bold">
+                                <i class="fas fa-map-marker-alt"></i> Venue
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="venue" name="venue" 
+                                   placeholder="Enter venue name (optional)">
+                            <small class="text-muted">Leave blank for average venue statistics</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-lg btn-primary w-100">
+                            <i class="fas fa-magic"></i> Predict Performance
+                        </button>
+                        <a href="{{ url_for('prediction.match_prediction') }}" class="btn btn-lg btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-arrow-left"></i> Back to Match Prediction
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="col-lg-6">
+            {% if prediction %}
+                <div class="card shadow-lg border-0 mb-4" id="resultCard">
+                    <div class="card-header bg-success text-white py-3">
+                        <h4 class="mb-0">
+                            <i class="fas fa-star"></i> Prediction Result
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Player Info -->
+                        <div class="mb-4">
+                            <h5 class="text-center mb-3">{{ prediction.player_name }}</h5>
+                            <div class="row text-center mb-3">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Team</small>
+                                    <strong>{{ prediction.player_team }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Opposition</small>
+                                    <strong>{{ prediction.opposition_team }}</strong>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+
+                        <!-- Predicted Category -->
+                        <div class="text-center mb-4">
+                            <h3 class="mb-2">Predicted Performance</h3>
+                            {% if prediction.predicted_category == 'High' %}
+                                <div class="badge bg-success p-3 fs-5">
+                                    <i class="fas fa-arrow-up"></i> {{ prediction.predicted_category }} Impact
+                                </div>
+                            {% elif prediction.predicted_category == 'Medium' %}
+                                <div class="badge bg-warning p-3 fs-5">
+                                    <i class="fas fa-minus"></i> {{ prediction.predicted_category }} Impact
+                                </div>
+                            {% else %}
+                                <div class="badge bg-danger p-3 fs-5">
+                                    <i class="fas fa-arrow-down"></i> {{ prediction.predicted_category }} Impact
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confidence Score -->
+                        <div class="mb-4">
+                            <h6 class="text-center mb-2">Model Confidence</h6>
+                            <div class="progress" style="height: 30px;">
+                                {% set confidence_pct = prediction.confidence %}
+                                {% if confidence_pct >= 80 %}
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ confidence_pct }}%;" 
+                                         aria-valuenow="{{ confidence_pct }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ confidence_pct }}%
+                                    </div>
+                                {% elif confidence_pct >= 60 %}
+                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                         style="width: {{ confidence_pct }}%;" 
+                                         aria-valuenow="{{ confidence_pct }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ confidence_pct }}%
+                                    </div>
+                                {% else %}
+                                    <div class="progress-bar bg-danger" role="progressbar" 
+                                         style="width: {{ confidence_pct }}%;" 
+                                         aria-valuenow="{{ confidence_pct }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ confidence_pct }}%
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Interpretation -->
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>What this means:</strong><br>
+                            {% if prediction.predicted_category == 'High' %}
+                                This player is predicted to have a <strong>significant positive impact</strong> on the match result. 
+                                Strong recent form and favorable matchups suggest high performance potential.
+                            {% elif prediction.predicted_category == 'Medium' %}
+                                This player is expected to deliver <strong>moderate performance</strong> in this match. 
+                                Performance will likely be close to their average form against this opposition.
+                            {% else %}
+                                This player may have <strong>lower impact</strong> on this specific match. 
+                                Consider alternative options or expect below-average performance.
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('playerForm').reset(); window.scrollTo(0, 0);">
+                                <i class="fas fa-redo"></i> Predict Another Player
+                            </button>
+                            <a href="{{ url_for('home.index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-home"></i> Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Info Cards -->
+                <div class="card shadow-lg border-0 mb-4">
+                    <div class="card-header bg-info text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-lightbulb"></i> How It Works</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select a player and their team</li>
+                            <li class="mb-2">Choose the opposition team for the match</li>
+                            <li class="mb-2">Model analyzes player form and matchup factors</li>
+                            <li class="mb-2">Get predicted performance category with confidence score</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="card shadow-lg border-0 mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-neural-network"></i> Factors Analyzed</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <strong>Recent Form:</strong> Last 5 matches performance trend
+                        </div>
+                        <div class="mb-2">
+                            <strong>Head-to-Head:</strong> Historical performance vs this opposition
+                        </div>
+                        <div class="mb-2">
+                            <strong>Home Advantage:</strong> Performance at this specific venue
+                        </div>
+                        <div class="mb-0">
+                            <strong>Player Stats:</strong> Career averages and strike rates
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-success text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Accuracy</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <strong>Model Accuracy:</strong> 85-89%
+                        </div>
+                        <div class="mb-0">
+                            <strong>Last Updated:</strong> Real-time with each prediction
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

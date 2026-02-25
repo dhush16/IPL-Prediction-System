@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - IPL Prediction System{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fas fa-tachometer-alt"></i> Analytics Dashboard</h1>
+
+<!-- Top Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card text-center">
+            <div class="mb-2"><i class="fas fa-chart-bar fa-2x"></i></div>
+            <h3>{{ total_predictions }}</h3>
+            <p>Total Predictions</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #2ca02c 0%, #1e7e0e 100%);">
+            <div class="mb-2"><i class="fas fa-bullseye fa-2x"></i></div>
+            <h3>{{ accuracy }}%</h3>
+            <p>Accuracy Rate</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #ff7f0e 0%, #e67e22 100%);">
+            <div class="mb-2"><i class="fas fa-calendar fa-2x"></i></div>
+            <h3>{{ teams | length }}</h3>
+            <p>Teams Tracked</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card text-center" style="background: linear-gradient(135deg, #d62728 0%, #c0392b 100%);">
+            <div class="mb-2"><i class="fas fa-fire fa-2x"></i></div>
+            <h3>Live</h3>
+            <p>System Status</p>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Win Probability Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="winProbChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Prediction Confidence Level</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h3 style="color: #2ca02c;">{{ win_prob_data.high }}</h3>
+                        <p class="small">High (70%+)</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 style="color: #ff7f0e;">{{ win_prob_data.medium }}</h3>
+                        <p class="small">Medium (50-70%)</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 style="color: #d62728;">{{ win_prob_data.low }}</h3>
+                        <p class="small">Low (<50%)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Predictions Table -->
+{% if recent_predictions %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Recent Predictions</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Team 1</th>
+                                <th>Team 2</th>
+                                <th>Predicted Winner</th>
+                                <th>Probability</th>
+                                <th>Model</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in recent_predictions %}
+                            <tr>
+                                <td><strong>{{ pred.team1 }}</strong></td>
+                                <td><strong>{{ pred.team2 }}</strong></td>
+                                <td><span class="badge bg-success">{{ pred.predicted_winner }}</span></td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" style="width: {{ pred.win_probability }}%;">
+                                            {{ pred.win_probability }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ pred.model_used }}</td>
+                                <td><small>{{ pred.prediction_time.strftime('%Y-%m-%d %H:%M') }}</small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Analytics Links -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <a href="/analytics/models" class="btn btn-primary me-2">
+                    <i class="fas fa-robot"></i> Model Analytics
+                </a>
+                <a href="/analytics/teams" class="btn btn-success me-2">
+                    <i class="fas fa-trophy"></i> Team Analytics
+                </a>
+                <a href="/analytics/venues" class="btn btn-info me-2">
+                    <i class="fas fa-map-marker-alt"></i> Venue Analytics
+                </a>
+                <a href="/comparison/teams" class="btn btn-warning">
+                    <i class="fas fa-exchange-alt"></i> Team Comparison
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Win Probability Distribution Chart
+fetch('/api/chart/win-probability').then(res => res.json()).then(data => {
+    const ctx = document.getElementById('winProbChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Predictions',
+                data: data.data,
+                backgroundColor: ['#d62728', '#ff7f0e', '#2ca02c', '#17aecb', '#1f77b4', '#9467bd']
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+}).catch(err => console.log('Chart load error:', err));
+</script>
+{% endblock %}

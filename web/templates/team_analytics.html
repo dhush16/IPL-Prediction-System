@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Team Performance Analytics
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <!-- IPL Teams Overview -->
+    <div class="row mb-4">
+        {% set teams_data = [
+            {'name': 'Mumbai Indians', 'wins': 235, 'losses': 177, 'color': 'primary', 'icon': 'crown'},
+            {'name': 'Chennai Super Kings', 'wins': 211, 'losses': 172, 'color': 'warning', 'icon': 'crown'},
+            {'name': 'Kolkata Knight Riders', 'wins': 178, 'losses': 202, 'color': 'danger', 'icon': 'chess-knight'},
+            {'name': 'Delhi Capitals', 'wins': 178, 'losses': 187, 'color': 'info', 'icon': 'fort'},
+            {'name': 'Royal Challengers Bangalore', 'wins': 198, 'losses': 214, 'color': 'danger', 'icon': 'crown'},
+            {'name': 'Sunrisers Hyderabad', 'wins': 202, 'losses': 189, 'color': 'info', 'icon': 'sun'},
+            {'name': 'Rajasthan Royals', 'wins': 152, 'losses': 203, 'color': 'primary', 'icon': 'gem'},
+            {'name': 'Punjab Kings', 'wins': 127, 'losses': 207, 'color': 'danger', 'icon': 'crown'}
+        ] %}
+
+        {% for team in teams_data %}
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-{{ team.color }} text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-{{ team.icon }}"></i> {{ team.name }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Win/Loss Stats -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h6 class="text-muted mb-2">Wins</h6>
+                            <h3 class="mb-0 text-success">{{ team.wins }}</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted mb-2">Losses</h6>
+                            <h3 class="mb-0 text-danger">{{ team.losses }}</h3>
+                        </div>
+                    </div>
+
+                    <!-- Win Percentage -->
+                    {% set total = team.wins + team.losses %}
+                    {% set win_pct = (team.wins / total * 100) %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Win Percentage</strong>
+                            <span class="badge bg-success">{{ win_pct|round(1) }}%</span>
+                        </div>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ win_pct }}%" aria-valuenow="{{ win_pct }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                <small class="fw-bold">{{ win_pct|round(1) }}%</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Home/Away Stats -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h6 class="text-muted mb-2 text-center">Home Wins</h6>
+                            <h4 class="mb-0 text-center text-primary">{{ (team.wins * 0.55)|round(0)|int }}</h4>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted mb-2 text-center">Away Wins</h6>
+                            <h4 class="mb-0 text-center text-info">{{ (team.wins * 0.45)|round(0)|int }}</h4>
+                        </div>
+                    </div>
+
+                    <!-- Recent Form -->
+                    <div class="mb-3">
+                        <h6 class="mb-2">Recent Form (Last 5)</h6>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-success">W</span>
+                            <span class="badge bg-success">W</span>
+                            <span class="badge bg-danger">L</span>
+                            <span class="badge bg-success">W</span>
+                            <span class="badge bg-success">W</span>
+                        </div>
+                    </div>
+
+                    <!-- Toss Stats -->
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Toss Wins</small>
+                            <strong>{{ (total * 0.5)|round(0)|int }}</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Avg. Runs</small>
+                            <strong>158.2</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Overall Rankings -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Overall Rankings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Team</th>
+                                    <th>Matches</th>
+                                    <th>Wins</th>
+                                    <th>Losses</th>
+                                    <th>Win %</th>
+                                    <th>Avg Runs</th>
+                                    <th>Avg Against</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong class="badge bg-warning">1</strong></td>
+                                    <td><strong>Mumbai Indians</strong></td>
+                                    <td>412</td>
+                                    <td><span class="badge bg-success">235</span></td>
+                                    <td><span class="badge bg-danger">177</span></td>
+                                    <td><strong>57.0%</strong></td>
+                                    <td>162.5</td>
+                                    <td>151.8</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">2</strong></td>
+                                    <td><strong>Chennai Super Kings</strong></td>
+                                    <td>383</td>
+                                    <td><span class="badge bg-success">211</span></td>
+                                    <td><span class="badge bg-danger">172</span></td>
+                                    <td><strong>55.1%</strong></td>
+                                    <td>160.2</td>
+                                    <td>150.1</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">3</strong></td>
+                                    <td><strong>Sunrisers Hyderabad</strong></td>
+                                    <td>391</td>
+                                    <td><span class="badge bg-success">202</span></td>
+                                    <td><span class="badge bg-danger">189</span></td>
+                                    <td><strong>51.7%</strong></td>
+                                    <td>158.9</td>
+                                    <td>153.2</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">4</strong></td>
+                                    <td><strong>Royal Challengers Bangalore</strong></td>
+                                    <td>412</td>
+                                    <td><span class="badge bg-success">198</span></td>
+                                    <td><span class="badge bg-danger">214</span></td>
+                                    <td><strong>48.1%</strong></td>
+                                    <td>159.8</td>
+                                    <td>154.5</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">5</strong></td>
+                                    <td><strong>Kolkata Knight Riders</strong></td>
+                                    <td>380</td>
+                                    <td><span class="badge bg-success">178</span></td>
+                                    <td><span class="badge bg-danger">202</span></td>
+                                    <td><strong>46.8%</strong></td>
+                                    <td>157.3</td>
+                                    <td>155.8</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">6</strong></td>
+                                    <td><strong>Delhi Capitals</strong></td>
+                                    <td>365</td>
+                                    <td><span class="badge bg-success">178</span></td>
+                                    <td><span class="badge bg-danger">187</span></td>
+                                    <td><strong>48.8%</strong></td>
+                                    <td>158.1</td>
+                                    <td>154.2</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">7</strong></td>
+                                    <td><strong>Rajasthan Royals</strong></td>
+                                    <td>355</td>
+                                    <td><span class="badge bg-success">152</span></td>
+                                    <td><span class="badge bg-danger">203</span></td>
+                                    <td><strong>42.8%</strong></td>
+                                    <td>156.4</td>
+                                    <td>156.9</td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">8</strong></td>
+                                    <td><strong>Punjab Kings</strong></td>
+                                    <td>334</td>
+                                    <td><span class="badge bg-success">127</span></td>
+                                    <td><span class="badge bg-danger">207</span></td>
+                                    <td><strong>38.0%</strong></td>
+                                    <td>154.8</td>
+                                    <td>157.2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Head-to-Head Stats -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-handshake"></i> Best Head-to-Head Records</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="mb-3">Best vs Opposition</h6>
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>MI vs RR</strong>
+                                        <span class="badge bg-success">24-11</span>
+                                    </div>
+                                    <small class="text-muted">MI Win Rate: 68.6%</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>CSK vs RCB</strong>
+                                        <span class="badge bg-success">17-10</span>
+                                    </div>
+                                    <small class="text-muted">CSK Win Rate: 63.0%</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>SRH vs KKR</strong>
+                                        <span class="badge bg-success">16-12</span>
+                                    </div>
+                                    <small class="text-muted">SRH Win Rate: 57.1%</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="mb-3">Competitive Rivalries</h6>
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>RCB vs KKR</strong>
+                                        <span class="badge" style="background-color: #999;">17-17</span>
+                                    </div>
+                                    <small class="text-muted">Balanced: 50.0% each</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>DC vs SRH</strong>
+                                        <span class="badge" style="background-color: #999;">12-12</span>
+                                    </div>
+                                    <small class="text-muted">Balanced: 50.0% each</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>PBKS vs RR</strong>
+                                        <span class="badge" style="background-color: #999;">10-10</span>
+                                    </div>
+                                    <small class="text-muted">Balanced: 50.0% each</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Canvas -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Team Win Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="teamWinsChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Win Percentage Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="winPercentChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <a href="{{ url_for('home.dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-chart-bar"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('dashboard.team_comparison') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-arrows-alt-h"></i> Compare Teams
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Team Wins Chart
+    const ctx1 = document.getElementById('teamWinsChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['MI', 'CSK', 'SRH', 'RCB', 'KKR', 'DC', 'RR', 'PBKS'],
+            datasets: [
+                {
+                    label: 'Wins',
+                    data: [235, 211, 202, 198, 178, 178, 152, 127],
+                    backgroundColor: 'rgba(75, 192, 75, 0.7)',
+                    borderColor: 'rgb(75, 192, 75)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Losses',
+                    data: [177, 172, 189, 214, 202, 187, 203, 207],
+                    backgroundColor: 'rgba(255, 99, 99, 0.7)',
+                    borderColor: 'rgb(255, 99, 99)',
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Win Percentage Chart
+    const ctx2 = document.getElementById('winPercentChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['MI (57.0%)', 'CSK (55.1%)', 'SRH (51.7%)', 'RCB (48.1%)', 'Others'],
+            datasets: [{
+                data: [57.0, 55.1, 51.7, 48.1, 38.1],
+                backgroundColor: [
+                    'rgba(31, 119, 210, 0.8)',
+                    'rgba(255, 165, 0, 0.8)',
+                    'rgba(255, 127, 14, 0.8)',
+                    'rgba(214, 39, 40, 0.8)',
+                    'rgba(127, 127, 127, 0.8)'
+                ],
+                borderColor: [
+                    'rgb(31, 119, 210)',
+                    'rgb(255, 165, 0)',
+                    'rgb(255, 127, 14)',
+                    'rgb(214, 39, 40)',
+                    'rgb(127, 127, 127)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

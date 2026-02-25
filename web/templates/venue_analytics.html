@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i> Venue Performance Analytics
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <!-- Venues Overview -->
+    <div class="row mb-4">
+        {% set venues_data = [
+            {'name': 'Arun Jaitley Stadium', 'city': 'Delhi', 'matches': 94, 'avg_runs': 165.2, 'avg_wickets': 7.2, 'home_wins': '55%'},
+            {'name': 'M. A. Chidambaram Stadium', 'city': 'Chennai', 'matches': 88, 'avg_runs': 162.8, 'avg_wickets': 7.8, 'home_wins': '58%'},
+            {'name': 'M. Chinnaswamy Stadium', 'city': 'Bangalore', 'matches': 92, 'avg_runs': 168.5, 'avg_wickets': 6.9, 'home_wins': '52%'},
+            {'name': 'Eden Gardens', 'city': 'Kolkata', 'matches': 86, 'avg_runs': 164.1, 'avg_wickets': 7.4, 'home_wins': '56%'},
+            {'name': 'Rajiv Gandhi Intl. Cricket Stadium', 'city': 'Hyderabad', 'matches': 84, 'avg_runs': 161.3, 'avg_wickets': 7.6, 'home_wins': '54%'},
+            {'name': 'Wankhede Stadium', 'city': 'Mumbai', 'matches': 91, 'avg_runs': 167.8, 'avg_wickets': 7.1, 'home_wins': '60%'}
+        ] %}
+
+        {% for venue in venues_data %}
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-location-dot"></i> {{ venue.name }}
+                    </h5>
+                    <small>{{ venue.city }}</small>
+                </div>
+                <div class="card-body">
+                    <!-- Match Count -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <h6 class="text-muted mb-2">Total Matches</h6>
+                            <h3 class="mb-0 text-info">{{ venue.matches }}</h3>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-muted mb-2">Home Advantage</h6>
+                            <h3 class="mb-0 text-success">{{ venue.home_wins }}</h3>
+                        </div>
+                    </div>
+
+                    <!-- Runs Statistics -->
+                    <div class="mb-3">
+                        <h6 class="mb-2">Average Runs Per Match</h6>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <strong class="text-warning">{{ venue.avg_runs }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="badge bg-warning">High Scoring</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wickets Statistics -->
+                    <div class="mb-3">
+                        <h6 class="mb-2">Average Wickets Per Match</h6>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <strong class="text-danger">{{ venue.avg_wickets }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="badge bg-danger">Medium Wickets</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Surface Type -->
+                    <div class="alert alert-info mb-0">
+                        <small>
+                            <strong>Pitch Type:</strong> Hard Court with Grass<br>
+                            <strong>Boundary:</strong> Center: 67m | Sides: 73m<br>
+                            <strong>Capacity:</strong> 42,000+ spectators
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Venue Performance Statistics -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Venue Rankings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Venue</th>
+                                    <th>City</th>
+                                    <th>Matches</th>
+                                    <th>Avg Runs</th>
+                                    <th>Avg Wickets</th>
+                                    <th>Home Win %</th>
+                                    <th>Difficulty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong class="badge bg-warning">1</strong></td>
+                                    <td><strong>M. Chinnaswamy Stadium</strong></td>
+                                    <td>Bangalore</td>
+                                    <td>92</td>
+                                    <td><span class="badge bg-danger">168.5</span></td>
+                                    <td><span class="badge bg-success">6.9</span></td>
+                                    <td><strong>52%</strong></td>
+                                    <td><span class="badge bg-danger">High Scoring</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">2</strong></td>
+                                    <td><strong>Wankhede Stadium</strong></td>
+                                    <td>Mumbai</td>
+                                    <td>91</td>
+                                    <td><span class="badge bg-danger">167.8</span></td>
+                                    <td><span class="badge bg-success">7.1</span></td>
+                                    <td><strong>60%</strong></td>
+                                    <td><span class="badge bg-danger">High Scoring</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">3</strong></td>
+                                    <td><strong>Arun Jaitley Stadium</strong></td>
+                                    <td>Delhi</td>
+                                    <td>94</td>
+                                    <td><span class="badge bg-warning">165.2</span></td>
+                                    <td><span class="badge bg-warning">7.2</span></td>
+                                    <td><strong>55%</strong></td>
+                                    <td><span class="badge bg-warning">Medium</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">4</strong></td>
+                                    <td><strong>Eden Gardens</strong></td>
+                                    <td>Kolkata</td>
+                                    <td>86</td>
+                                    <td><span class="badge bg-warning">164.1</span></td>
+                                    <td><span class="badge bg-warning">7.4</span></td>
+                                    <td><strong>56%</strong></td>
+                                    <td><span class="badge bg-warning">Medium</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">5</strong></td>
+                                    <td><strong>M. A. Chidambaram Stadium</strong></td>
+                                    <td>Chennai</td>
+                                    <td>88</td>
+                                    <td><span class="badge bg-warning">162.8</span></td>
+                                    <td><span class="badge">7.8</span></td>
+                                    <td><strong>58%</strong></td>
+                                    <td><span class="badge bg-warning">Medium</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="badge bg-secondary">6</strong></td>
+                                    <td><strong>Rajiv Gandhi Intl. Cricket Stadium</strong></td>
+                                    <td>Hyderabad</td>
+                                    <td>84</td>
+                                    <td><span class="badge bg-info">161.3</span></td>
+                                    <td><span class="badge">7.6</span></td>
+                                    <td><strong>54%</strong></td>
+                                    <td><span class="badge bg-info">Bowling Friendly</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Venue Characteristics -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="mb-0"><i class="fas fa-fire"></i> High Scoring Venues</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>M. Chinnaswamy Stadium</strong>
+                                <span class="badge bg-danger">168.5 runs</span>
+                            </div>
+                            <small class="text-muted">Batting-friendly, short boundaries</small>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Wankhede Stadium</strong>
+                                <span class="badge bg-danger">167.8 runs</span>
+                            </div>
+                            <small class="text-muted">Fast outfield, good batting conditions</small>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Arun Jaitley Stadium</strong>
+                                <span class="badge bg-warning">165.2 runs</span>
+                            </div>
+                            <small class="text-muted">Maintains good pace, spectator-friendly</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-fingerprint"></i> Bowling-Friendly Venues</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>M. A. Chidambaram Stadium</strong>
+                                <span class="badge bg-danger">7.8 wickets</span>
+                            </div>
+                            <small class="text-muted">Turning pitch, spin-friendly surface</small>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Rajiv Gandhi Intl. Cricket Stadium</strong>
+                                <span class="badge bg-danger">7.6 wickets</span>
+                            </div>
+                            <small class="text-muted">Seamy surface, quick wickets early</small>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Eden Gardens</strong>
+                                <span class="badge bg-warning">7.4 wickets</span>
+                            </div>
+                            <small class="text-muted">Historic ground, variable conditions</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Advantage Analysis -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-home"></i> Home Advantage by Venue</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="homeAdvantageChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Runs vs Wickets Scatter -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> Runs Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="runsChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-chess-rook"></i> Wickets Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="wicketsChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <a href="{{ url_for('home.dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-chart-bar"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('prediction.match_prediction') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-magic"></i> Make a Prediction
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Home Advantage Chart
+    const homeCtx = document.getElementById('homeAdvantageChart').getContext('2d');
+    new Chart(homeCtx, {
+        type: 'bar',
+        data: {
+            labels: ['AJS', 'MCS', 'MCH', 'EG', 'RGIS', 'WS'],
+            datasets: [{
+                label: 'Home Win %',
+                data: [55, 58, 52, 56, 54, 60],
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            indexAxis: 'x',
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Runs Chart
+    const runsCtx = document.getElementById('runsChart').getContext('2d');
+    new Chart(runsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['MCH', 'WS', 'AJS', 'EG', 'MCS', 'RGIS'],
+            datasets: [{
+                label: 'Average Runs',
+                data: [168.5, 167.8, 165.2, 164.1, 162.8, 161.3],
+                backgroundColor: 'rgba(255, 193, 7, 0.7)',
+                borderColor: 'rgb(255, 193, 7)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 150,
+                    max: 180
+                }
+            }
+        }
+    });
+
+    // Wickets Chart
+    const wicketsCtx = document.getElementById('wicketsChart').getContext('2d');
+    new Chart(wicketsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['MCS', 'RGIS', 'EG', 'AJS', 'WS', 'MCH'],
+            datasets: [{
+                label: 'Average Wickets',
+                data: [7.8, 7.6, 7.4, 7.2, 7.1, 6.9],
+                backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                borderColor: 'rgb(220, 53, 69)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 6,
+                    max: 8.5
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

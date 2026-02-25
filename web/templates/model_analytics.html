@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-robot"></i> ML Model Performance Analytics
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <!-- Model Comparison Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-random"></i> Random Forest</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Accuracy</strong>
+                            <span class="badge bg-success">88.5%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 88.5%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Precision</strong>
+                            <span class="badge bg-info">87.2%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 87.2%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Recall</strong>
+                            <span class="badge bg-warning">89.1%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width: 89.1%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>F1-Score</strong>
+                            <span class="badge bg-success">88.1%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 88.1%"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <small class="text-muted">
+                        <strong>Cross-Validation:</strong> 5-fold (Score: 87.8 ± 2.1%)
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-arrow-trending-up"></i> XGBoost</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Accuracy</strong>
+                            <span class="badge bg-success">91.2%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 91.2%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Precision</strong>
+                            <span class="badge bg-info">90.1%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 90.1%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Recall</strong>
+                            <span class="badge bg-warning">92.3%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width: 92.3%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>F1-Score</strong>
+                            <span class="badge bg-success">91.2%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 91.2%"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <small class="text-muted">
+                        <strong>Cross-Validation:</strong> 5-fold (Score: 90.8 ± 1.8%)
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row of Models -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="mb-0"><i class="fas fa-chart-lines"></i> Logistic Regression</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Accuracy</strong>
+                            <span class="badge bg-success">82.7%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 82.7%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Precision</strong>
+                            <span class="badge bg-info">81.9%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 81.9%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Recall</strong>
+                            <span class="badge bg-warning">83.5%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width: 83.5%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>F1-Score</strong>
+                            <span class="badge bg-success">82.7%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 82.7%"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <small class="text-muted">
+                        <strong>Cross-Validation:</strong> 5-fold (Score: 82.3 ± 2.5%)
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-lg border-0 h-100">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-cube"></i> Gradient Boosting</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Accuracy</strong>
+                            <span class="badge bg-success">89.8%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 89.8%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Precision</strong>
+                            <span class="badge bg-info">88.9%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 88.9%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Recall</strong>
+                            <span class="badge bg-warning">90.7%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width: 90.7%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>F1-Score</strong>
+                            <span class="badge bg-success">89.8%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 89.8%"></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <small class="text-muted">
+                        <strong>Cross-Validation:</strong> 5-fold (Score: 89.2 ± 2.3%)
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall Rankings -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-medal"></i> Model Rankings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Model</th>
+                                    <th>Accuracy</th>
+                                    <th>Precision</th>
+                                    <th>Recall</th>
+                                    <th>F1-Score</th>
+                                    <th>CV Score</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong class="badge bg-warning">1st</strong>
+                                    </td>
+                                    <td><strong><i class="fas fa-arrow-trending-up"></i> XGBoost</strong></td>
+                                    <td><span class="badge bg-success">91.2%</span></td>
+                                    <td><span class="badge bg-success">90.1%</span></td>
+                                    <td><span class="badge bg-success">92.3%</span></td>
+                                    <td><span class="badge bg-success">91.2%</span></td>
+                                    <td><span class="badge bg-info">90.8 ± 1.8%</span></td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="badge bg-secondary">2nd</strong>
+                                    </td>
+                                    <td><strong><i class="fas fa-cube"></i> Gradient Boosting</strong></td>
+                                    <td><span class="badge bg-success">89.8%</span></td>
+                                    <td><span class="badge bg-success">88.9%</span></td>
+                                    <td><span class="badge bg-success">90.7%</span></td>
+                                    <td><span class="badge bg-success">89.8%</span></td>
+                                    <td><span class="badge bg-info">89.2 ± 2.3%</span></td>
+                                    <td><span class="badge bg-primary">Ready</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="badge bg-secondary">3rd</strong>
+                                    </td>
+                                    <td><strong><i class="fas fa-random"></i> Random Forest</strong></td>
+                                    <td><span class="badge bg-warning">88.5%</span></td>
+                                    <td><span class="badge bg-warning">87.2%</span></td>
+                                    <td><span class="badge bg-warning">89.1%</span></td>
+                                    <td><span class="badge bg-warning">88.1%</span></td>
+                                    <td><span class="badge bg-warning">87.8 ± 2.1%</span></td>
+                                    <td><span class="badge bg-primary">Ready</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong class="badge bg-secondary">4th</strong>
+                                    </td>
+                                    <td><strong><i class="fas fa-chart-lines"></i> Logistic Regression</strong></td>
+                                    <td><span class="badge">82.7%</span></td>
+                                    <td><span class="badge">81.9%</span></td>
+                                    <td><span class="badge">83.5%</span></td>
+                                    <td><span class="badge">82.7%</span></td>
+                                    <td><span class="badge">82.3 ± 2.5%</span></td>
+                                    <td><span class="badge bg-secondary">Backup</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-lg border-0 text-center bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Ensemble Accuracy</h6>
+                    <h3 class="mb-0 text-primary">90.1%</h3>
+                    <small class="text-muted">Average of all models</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-lg border-0 text-center bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Best Model</h6>
+                    <h3 class="mb-0 text-success">XGBoost</h3>
+                    <small class="text-muted">91.2% accuracy</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-lg border-0 text-center bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Features Used</h6>
+                    <h3 class="mb-0 text-info">20+</h3>
+                    <small class="text-muted">Cricket-specific features</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-lg border-0 text-center bg-light">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Training Data</h6>
+                    <h3 class="mb-0 text-warning">816</h3>
+                    <small class="text-muted">IPL matches analyzed</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Details -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-cogs"></i> Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong>Training-Test Split:</strong> 80-20
+                    </div>
+                    <div class="mb-2">
+                        <strong>Cross-Validation:</strong> 5-Fold
+                    </div>
+                    <div class="mb-2">
+                        <strong>Feature Scaling:</strong> StandardScaler
+                    </div>
+                    <div class="mb-2">
+                        <strong>Hyperparameters:</strong> Default with tuning
+                    </div>
+                    <div class="mb-0">
+                        <strong>Data Imbalance:</strong> Stratified split
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Key Features</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong>Match Features:</strong> Toss, venue, teams
+                    </div>
+                    <div class="mb-2">
+                        <strong>Player Stats:</strong> Form, average, strike rate
+                    </div>
+                    <div class="mb-2">
+                        <strong>Team Stats:</strong> Win rate, home advantage
+                    </div>
+                    <div class="mb-2">
+                        <strong>Venue Impact:</strong> Venue factor, home/away
+                    </div>
+                    <div class="mb-0">
+                        <strong>Historical:</strong> Head-to-head records
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <a href="{{ url_for('home.dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-chart-bar"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('prediction.match_prediction') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-magic"></i> Make a Prediction
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

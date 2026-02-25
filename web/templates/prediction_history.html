@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-history"></i> Prediction History
+                        </h4>
+                        <div>
+                            <small class="me-2">Total Predictions: <strong>{{ predictions.total }}</strong></small>
+                            {% if predictions.pages > 1 %}
+                                <span class="badge bg-info">Page {{ page }} of {{ predictions.pages }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if predictions.items %}
+        <!-- Predictions Table -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <div class="table-responsive shadow-lg rounded">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th><i class="fas fa-calendar"></i> Date & Time</th>
+                                <th><i class="fas fa-shield-alt"></i> Teams</th>
+                                <th><i class="fas fa-map-marker-alt"></i> Venue</th>
+                                <th><i class="fas fa-trophy"></i> Predicted Winner</th>
+                                <th><i class="fas fa-percentage"></i> Probability</th>
+                                <th><i class="fas fa-check"></i> Confidence</th>
+                                <th><i class="fas fa-robot"></i> Model</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in predictions.items %}
+                                <tr class="align-middle">
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ pred.prediction_time.strftime('%Y-%m-%d %H:%M:%S') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <strong>{{ pred.team1 }}</strong><br>
+                                        <span class="badge bg-secondary">vs</span><br>
+                                        <strong>{{ pred.team2 }}</strong>
+                                    </td>
+                                    <td>
+                                        <small>{{ pred.venue }}</small>
+                                    </td>
+                                    <td>
+                                        <strong class="text-success">
+                                            <i class="fas fa-check-circle"></i> {{ pred.predicted_winner }}
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px; min-width: 100px;">
+                                            {% set prob = pred.win_probability %}
+                                            {% if prob >= 70 %}
+                                                <div class="progress-bar bg-success" role="progressbar" 
+                                                     style="width: {{ prob }}%;" title="{{ prob }}%">
+                                                    <small>{{ prob|round(1) }}%</small>
+                                                </div>
+                                            {% elif prob >= 50 %}
+                                                <div class="progress-bar bg-warning" role="progressbar" 
+                                                     style="width: {{ prob }}%;" title="{{ prob }}%">
+                                                    <small>{{ prob|round(1) }}%</small>
+                                                </div>
+                                            {% else %}
+                                                <div class="progress-bar bg-danger" role="progressbar" 
+                                                     style="width: {{ prob }}%;" title="{{ prob }}%">
+                                                    <small>{{ prob|round(1) }}%</small>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if pred.confidence_score >= 0.8 %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-thumbs-up"></i> High
+                                            </span>
+                                        {% elif pred.confidence_score >= 0.6 %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-minus"></i> Medium
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-thumbs-down"></i> Low
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="badge bg-primary">
+                                            {{ pred.model_used }}
+                                        </small>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">Average Confidence</h6>
+                        <h3 class="mb-0 text-primary">
+                            {% set avg_conf = (predictions.items|map(attribute='confidence_score')|sum) / predictions.items|length %}
+                            {{ (avg_conf * 100)|round(1) }}%
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">High Confidence</h6>
+                        <h3 class="mb-0 text-success">
+                            {{ predictions.items|selectattr('confidence_score', 'ge', 0.8)|list|length }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">Medium Confidence</h6>
+                        <h3 class="mb-0 text-warning">
+                            {{ predictions.items|selectattr('confidence_score', 'ge', 0.6)|selectattr('confidence_score', 'lt', 0.8)|list|length }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">Low Confidence</h6>
+                        <h3 class="mb-0 text-danger">
+                            {{ predictions.items|selectattr('confidence_score', 'lt', 0.6)|list|length }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if predictions.pages > 1 %}
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if predictions.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('prediction.prediction_history', page=1) }}">
+                                        <i class="fas fa-backward"></i> First
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('prediction.prediction_history', page=predictions.prev_num) }}">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            <!-- Page numbers -->
+                            {% set start = max(1, predictions.page - 2) %}
+                            {% set end = min(predictions.pages, start + 4) %}
+                            
+                            {% for page_num in range(start, end + 1) %}
+                                {% if page_num == predictions.page %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('prediction.prediction_history', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if predictions.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('prediction.prediction_history', page=predictions.next_num) }}">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('prediction.prediction_history', page=predictions.pages) }}">
+                                        Last <i class="fas fa-forward"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-lg-12">
+                <a href="{{ url_for('prediction.match_prediction') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-magic"></i> Make New Prediction
+                </a>
+                <a href="{{ url_for('home.index') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-inbox text-muted" style="font-size: 48px;"></i>
+                        <h5 class="mt-3 text-muted">No Predictions Yet</h5>
+                        <p class="text-muted mb-4">
+                            You haven't made any predictions yet. Start by creating your first prediction!
+                        </p>
+                        <a href="{{ url_for('prediction.match_prediction') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-magic"></i> Make Your First Prediction
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(31, 119, 210, 0.05) !important;
+        cursor: pointer;
+    }
+    
+    .progress {
+        border-radius: 10px;
+        background-color: #e9ecef;
+    }
+    
+    .progress-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
